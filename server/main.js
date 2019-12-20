@@ -36,9 +36,11 @@ server.use(bp.json());
 
 //NOTE we have to import access to our controllers
 import ValuesController from "./controllers/ValuesController";
+import BugsController from "./controllers/BugsController";
 
 //NOTE remember the forward slash at the start of your path!
 server.use("/api/values", new ValuesController().router);
+server.use("/api/bugs", new BugsController().router);
 
 //NOTE Everything below this line always stays the same
 
@@ -58,7 +60,7 @@ server.use((error, req, res, next) => {
   res.status(error.status || 400).send({ error: { message: error.message } });
 });
 
-//NOTE Catch all to insure to return 404 if recieved a bad route
+//NOTE Catch all to insure to return 404 if received a bad route
 server.use((req, res, next) => {
   res.status(404).send("Route not found");
 });
