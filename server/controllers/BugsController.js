@@ -1,14 +1,14 @@
 import express from 'express';
 import Axios from "axios";
-import BugService from '../services/BugsService';
+import BugsService from '../services/BugsService';
 
-let _bugService = new BugService().repository
+let _bugsService = new BugsService().repository
 
-const _bugApi = Axios.create({
-  baseURL: 'https://localhost:3000/api'
-})
+// const _bugApi = Axios.create({
+//   baseURL: 'https://localhost:3000/api'
+// })
 
-export default class BugController {
+export default class BugsController {
   constructor() {
     this.router = express.Router()
       .get('', this.getAll)
@@ -16,13 +16,14 @@ export default class BugController {
       .get('/:id/notes', this.getNotesByBug)
       .post('', this.createBug)
       .put('/:id', this.editBugById)
-    // .delete('/:id', this.changeBugStatus)
+      .put('/:id', this.cannotEditClosedBug)
+      .delete('/:id', this.changeBugStatus)
     // .delete('/:id/notes/:id', this.deleteNoteFromBugById)
   }
 
   async getAll(req, res, next) {
     try {
-      let data = await _bugService.find({})
+      let data = await _bugsService.find({})
       return res.send(data)
     } catch (error) {
       next(error)
@@ -31,7 +32,7 @@ export default class BugController {
 
   async getById(req, res, next) {
     try {
-      let data = await _bugService.findById(req.params.id)
+      let data = await _bugsService.findById(req.params.id)
       if (!data) {
         throw new Error("Invalid Id")
       }
@@ -43,7 +44,7 @@ export default class BugController {
 
   async getNotesByBug(req, res, next) {
     try {
-      let data = await _bugService.find({ bug: req.params.id, authorId: req.session.uid })
+      let data = await _bugsService.find({ bug: req.params.id, authorId: req.session.uid })
       if (!data) {
         throw new Error("Invalid Id")
       }
@@ -55,8 +56,7 @@ export default class BugController {
 
   async createBug(req, res, next) {
     try {
-      req.body.authorId = req.session.uid
-      let data = await _bugService.create(req.body)
+      let data = await _bugsService.create(req.body)
       res.send(data)
     } catch (error) {
       next(error)
@@ -65,7 +65,7 @@ export default class BugController {
 
   async editBugById(req, res, next) {
     try {
-      let data = await _bugService.findOneAndUpdate({ _id: req.params.id, authorId: req.session.uid }, req.body, { new: true })
+      let data = await _bugsService.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
       if (!data) {
         throw new Error("Invalid Id")
       }
@@ -75,6 +75,31 @@ export default class BugController {
     }
   }
 
+  async cannotEditClosedBug(req, res, next) {
+    try {
+      if (closed == false) {
+        let data = await _bugsService.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+        if (!data) {
+          throw new Error("Invalid Id")
+        }
+        return res.send(data)
+      }
+      else {
+        return "You can not edit a closed bug"
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async changeBugStatus(req, res, next) {
+    try {
+      await _bugsService.findOneAndRemove(req.params.id)
+      res.send("changed bug status to closed")
+    } catch (error) {
+      next(error)
+    }
+  }
 
 
 
