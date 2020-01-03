@@ -28,6 +28,7 @@ export default new Vuex.Store({
 
     async addBug({ commit, dispatch }, data) {
       try {
+        debugger
         let res = await api.post('/bugs', data)
         dispatch("getBugs");
       } catch (error) {
