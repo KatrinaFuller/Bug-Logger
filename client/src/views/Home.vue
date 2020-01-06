@@ -16,10 +16,15 @@
         <!-- <tr> -->
         <bug v-for="bug in bugs" :key="bug.id" :bugProp="bug" />
         <!-- </tr> -->
+
+        <tr>
+          <th scope="row">Test title</th>
+          <td>test person</td>
+          <td>test status</td>
+          <td>test date</td>
+        </tr>
       </tbody>
     </table>
-
-    <!-- <bug v-for="bug in bugs" :key="bug.id" :bugProp="bug" /> -->
   </div>
 </template>
 

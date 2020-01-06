@@ -1,7 +1,7 @@
 <template>
   <div class="bug">
     <tr>
-      <td>{{bugProp.title}}</td>
+      <th scope="row">{{bugProp.title}}</th>
       <td>{{bugProp.reportedBy}}</td>
       <td>{{bugProp.status}}</td>
       <td>{{bugProp.closedDate}}</td>
