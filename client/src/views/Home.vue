@@ -35,6 +35,9 @@ export default {
       return this.$store.state.bugs;
     }
   },
+  mounted() {
+    this.$store.dispatch("getBugs");
+  },
   components: { addBugModal, bug }
 };
 </script>

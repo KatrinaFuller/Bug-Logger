@@ -5,7 +5,7 @@ import Axios from 'axios'
 Vue.use(Vuex)
 
 let api = Axios.create({
-  baseURL: 'https://localhost:3000/api'
+  baseURL: 'http://localhost:3000/api/'
 })
 
 export default new Vuex.Store({
@@ -28,7 +28,6 @@ export default new Vuex.Store({
 
     async addBug({ commit, dispatch }, data) {
       try {
-        debugger
         let res = await api.post('/bugs', data)
         dispatch("getBugs");
       } catch (error) {
